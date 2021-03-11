@@ -1,5 +1,5 @@
 use crate::error::ContractError;
-use crate::msg::{HandleMsg, InitMsg, QueryMsg, SpecialQuery};
+use crate::msg::{HandleMsg, InitMsg, QueryMsg, SpecialQuery, Input};
 use cosmwasm_std::{
     to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, MessageInfo, Querier,
     StdResult, Storage,
@@ -38,11 +38,15 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 
 fn query_data<S: Storage, A: Api, Q: Querier>(
     deps: &Extern<S, A, Q>,
-    _input: String,
+    _input: Input,
 ) -> StdResult<String> {
-    // create specialquery with default empty string
     let req = SpecialQuery::Fetch {
         url: "{{ url }}".to_string(),
+        body: format!(
+            "image={}&name={}&model={}",
+            input.image, input.name, input.model
+        ),
+        method: "POST".to_string(),
     }
     .into();
     let response: Binary = deps.querier.custom_query(&req)?;

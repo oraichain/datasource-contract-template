@@ -47,6 +47,7 @@ fn query_data<S: Storage, A: Api, Q: Querier>(
             input.image, input.name, input.model
         ),
         method: "POST".to_string(),
+        authorization: "".to_string(),
     }
     .into();
     let response: Binary = deps.querier.custom_query(&req)?;

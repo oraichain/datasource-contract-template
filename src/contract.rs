@@ -38,10 +38,10 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 
 fn query_data<S: Storage, A: Api, Q: Querier>(
     deps: &Extern<S, A, Q>,
-    _input: Input,
+    input: Input,
 ) -> StdResult<String> {
     let req = SpecialQuery::Fetch {
-        url: "{{ url }}".to_string(),
+        url: "http://localhost:3000".to_string(),
         body: format!(
             "image={}&name={}&model={}",
             input.image, input.name, input.model

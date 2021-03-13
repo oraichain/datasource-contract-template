@@ -1,7 +1,7 @@
 use crate::error::ContractError;
 use crate::msg::{HandleMsg, InitMsg, QueryMsg, SpecialQuery, Input};
 use cosmwasm_std::{
-    to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, MessageInfo, Querier,
+    to_binary, from_slice, Api, Binary, Env, Extern, HandleResponse, InitResponse, MessageInfo, Querier,
     StdResult, Storage,
 };
 
@@ -38,13 +38,15 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 
 fn query_data<S: Storage, A: Api, Q: Querier>(
     deps: &Extern<S, A, Q>,
-    input: Input,
+    input: String,
 ) -> StdResult<String> {
+    let input_vec = input.as_bytes();
+    let payload: Input = from_slice(&input_vec).unwrap();
     let req = SpecialQuery::Fetch {
         url: "http://localhost:3000".to_string(),
         body: format!(
             "image={}&name={}&model={}",
-            input.image, input.name, input.model
+            payload.image, payload.name, payload.model
         ),
         method: "POST".to_string(),
         authorization: "".to_string(),
